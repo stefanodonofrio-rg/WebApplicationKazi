@@ -2,6 +2,14 @@
 
 I would like you to create an application that is able to connect to a SQL Server Instance and get information about your MonitoredEntities.
 
+You will need to create your Database and create a table with the following properties:
+```
+ID: uniqueidentifier
+Name: nvarchar(255)
+Value: nvarchar(255)
+```
+Then you'll need to pass the connection string to your application.
+
 The Monitored Entity Object is already represented in the Repository and you should use the same SHAPE of the object.
 
 In particular should be implemented basic CRUD Operations:
