@@ -1,6 +1,8 @@
+using WebApplicationKazim.Interfaces;
+
 namespace WebApplicationKazim;
 
-public class MonitoredEntity
+public class MonitoredEntity : IMonitoredEntity
 {
     public Guid Id { get; set; }
     
