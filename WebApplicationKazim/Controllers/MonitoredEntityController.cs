@@ -1,4 +1,6 @@
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace WebApplicationKazim.Controllers;
 
@@ -13,9 +15,27 @@ public class MonitoredEntityController : ControllerBase
         _logger = logger;
     }
 
+    private void DatabaseConnector()
+    {
+        string connectionString = "Server=DEV-LT-KAZIMR"
+        using var dbConnection;
+        
+    }
+
+    private IDbConnection DatabaseConnection()
+    {
+        return DbTyp
+    }
+
     [HttpGet]
     public IEnumerable<MonitoredEntity> Get()
     {
         return new MonitoredEntity[]{};
+    }
+
+    [HttpDelete]
+    public void Delete(Guid valToDelete)
+    {
+        
     }
 }
