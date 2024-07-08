@@ -1,6 +1,8 @@
 using System.Data;
+using System.Data.Common;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.SqlClient;
+
 
 namespace WebApplicationKazim.Controllers;
 
@@ -9,33 +11,38 @@ namespace WebApplicationKazim.Controllers;
 public class MonitoredEntityController : ControllerBase
 {
     private readonly ILogger<MonitoredEntityController> _logger;
+    private DatabaseOperator _databaseFunctionality;
 
     public MonitoredEntityController(ILogger<MonitoredEntityController> logger)
     {
         _logger = logger;
+        DatabaseConnector();
     }
 
     private void DatabaseConnector()
     {
-        string connectionString = "Server=DEV-LT-KAZIMR"
-        using var dbConnection;
-        
-    }
-
-    private IDbConnection DatabaseConnection()
-    {
-        return DbTyp
+        _databaseFunctionality = new();
     }
 
     [HttpGet]
-    public IEnumerable<MonitoredEntity> Get()
+    public MonitoredEntity Get(string id)
     {
-        return new MonitoredEntity[]{};
+        return _databaseFunctionality.Get(id);
     }
 
     [HttpDelete]
-    public void Delete(Guid valToDelete)
+    public bool Delete(Guid id)
     {
-        
+        return _databaseFunctionality.Delete(id);
+    }
+    [HttpPut]
+    public bool Update(Guid id, string name, string value)
+    {
+       return _databaseFunctionality.Update(new MonitoredEntity(id, name, value));
+    }
+    [HttpPost]
+    public bool Add(Guid id, string name, string value)
+    {
+        return _databaseFunctionality.Add(new MonitoredEntity(id, name, value));
     }
 }

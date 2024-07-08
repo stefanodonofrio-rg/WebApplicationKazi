@@ -6,5 +6,12 @@ public class MonitoredEntity
     
     public string Name { get; set; }
 
-    public int Value { get; set; }
+    public string Value { get; set; }
+
+    public MonitoredEntity(Guid id = default(Guid), string name = "", string value = "")
+    {
+        Id = id;
+        Name = name;
+        Value = value;
+    }
 }
