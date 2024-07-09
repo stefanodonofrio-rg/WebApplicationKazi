@@ -9,8 +9,12 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
-        builder.Services.AddScoped<IMonitoredEntityRepository, MonitoredEntityRepository>(x => new MonitoredEntityRepository(""));
-
+        builder.Services.AddScoped<IMonitoredEntityRepository, MonitoredEntityRepository>(
+            x => 
+                new MonitoredEntityRepository(
+                    "Data Source=DEV-LT-KAZIMR; Initial Catalog=MonitoredEntityTable; Integrated Security=true; TrustServerCertificate=True"
+                    ));
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
