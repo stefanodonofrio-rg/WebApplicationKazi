@@ -11,17 +11,12 @@ namespace WebApplicationKazim.Controllers;
 public class MonitoredEntityController : ControllerBase
 {
     private readonly ILogger<MonitoredEntityController> _logger;
-    private DatabaseOperator _databaseFunctionality;
+    private IMonitoredEntityRepository _databaseFunctionality;
 
-    public MonitoredEntityController(ILogger<MonitoredEntityController> logger)
+    public MonitoredEntityController(ILogger<MonitoredEntityController> logger, IMonitoredEntityRepository monitoredEntityRepository)
     {
         _logger = logger;
-        DatabaseConnector();
-    }
-
-    private void DatabaseConnector()
-    {
-        _databaseFunctionality = new();
+        _databaseFunctionality = monitoredEntityRepository;
     }
 
     [HttpGet]
@@ -31,7 +26,7 @@ public class MonitoredEntityController : ControllerBase
     }
 
     [HttpDelete]
-    public bool Delete(Guid id)
+    public bool Delete(string id)
     {
         return _databaseFunctionality.Delete(id);
     }

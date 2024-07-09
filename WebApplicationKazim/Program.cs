@@ -9,6 +9,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
+        builder.Services.AddScoped<IMonitoredEntityRepository, MonitoredEntityRepository>(x => new MonitoredEntityRepository(""));
 
         var app = builder.Build();
 

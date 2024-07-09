@@ -3,23 +3,22 @@ using Microsoft.Data.SqlClient;
 
 namespace WebApplicationKazim;
 
-public class DatabaseOperator
+public class MonitoredEntityRepository : IMonitoredEntityRepository
 {
     private IDbConnection _databaseConnection { get; set; }
-    
-    private void OpenConnection()
+
+
+    public MonitoredEntityRepository(string connectionString)
     {
-        string connectionString = "Data Source=DEV-LT-KAZIMR; Initial Catalog=MonitoredEntityTable; Integrated Security=true; TrustServerCertificate=True";
         _databaseConnection = new SqlConnection(connectionString);
-        _databaseConnection.Open();
     }
 
     public MonitoredEntity Get(string id)
     {
-        MonitoredEntity returnValue = new MonitoredEntity();
+        MonitoredEntity retrievedEntity = new MonitoredEntity();
         try
         {
-            OpenConnection();
+            _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
         
             command.CommandText = $"""
@@ -29,23 +28,23 @@ public class DatabaseOperator
                                    """;
             var reader = command.ExecuteReader();
             reader.Read();
-            returnValue.Id = reader.GetGuid(0);
-            returnValue.Name = reader.GetString(1);
-            returnValue.Value = reader.GetString(2);
+            retrievedEntity.Id = reader.GetGuid(0);
+            retrievedEntity.Name = reader.GetString(1);
+            retrievedEntity.Value = reader.GetString(2);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
         _databaseConnection.Close();
-        return returnValue;
+        return retrievedEntity;
     }
 
-    public bool Delete(Guid id)
+    public bool Delete(string id)
     {
         try
         {
-            OpenConnection();
+            _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
         
             command.CommandText = $"""
@@ -70,9 +69,9 @@ public class DatabaseOperator
 
     public bool Update(MonitoredEntity updatedEntity)
     {
-        OpenConnection();
         try
         {
+            _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
 
             command.CommandText = $"""
@@ -99,7 +98,7 @@ public class DatabaseOperator
     {
         try
         {
-            OpenConnection();
+            _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
         
             command.CommandText = $"""
