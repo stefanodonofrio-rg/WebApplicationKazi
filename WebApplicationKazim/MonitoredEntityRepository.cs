@@ -5,22 +5,21 @@ namespace WebApplicationKazim;
 
 public class MonitoredEntityRepository : IMonitoredEntityRepository
 {
-    private IDbConnection _databaseConnection { get; set; }
+    private IDbConnection _databaseConnection { get; }
 
 
-    public MonitoredEntityRepository(string connectionString)
+    public MonitoredEntityRepository(IDbConnection connection)
     {
-        _databaseConnection = new SqlConnection(connectionString);
+        _databaseConnection = connection;
     }
 
     public MonitoredEntity Get(string id)
     {
-        MonitoredEntity retrievedEntity = new MonitoredEntity();
         try
         {
             _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
-        
+
             command.CommandText = $"""
                                    SELECT * 
                                    FROM MonitoredEntityTable
@@ -28,16 +27,30 @@ public class MonitoredEntityRepository : IMonitoredEntityRepository
                                    """;
             var reader = command.ExecuteReader();
             reader.Read();
-            retrievedEntity.Id = reader.GetGuid(0);
-            retrievedEntity.Name = reader.GetString(1);
-            retrievedEntity.Value = reader.GetString(2);
+            var retrievedEntity = new MonitoredEntityData()
+            {
+                Id = reader.GetGuid(0),
+                Name = reader.GetString(1),
+                Value = reader.GetString(2)
+            };
+            _databaseConnection.Close();
+            // Finished Data Layer
+            return new MonitoredEntity()
+            {
+                Id = retrievedEntity.Id,
+                Name = retrievedEntity.Name,
+                Value = retrievedEntity.Value
+            };
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
+        
+
+
         _databaseConnection.Close();
-        return retrievedEntity;
+        return null;
     }
 
     public bool Delete(string id)
@@ -71,13 +84,20 @@ public class MonitoredEntityRepository : IMonitoredEntityRepository
     {
         try
         {
+            var updatedMonitoredEntityData = new MonitoredEntityData()
+            {
+                Id = updatedEntity.Id,
+                Name = updatedEntity.Name,
+                Value = updatedEntity.Value
+            };
+            
             _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
 
             command.CommandText = $"""
                                     UPDATE MonitoredEntityTable
-                                    SET Name = '{updatedEntity.Name}', Value = '{updatedEntity.Value}'
-                                    WHERE ID = '{updatedEntity.Id}'
+                                    SET Name = '{updatedMonitoredEntityData.Name}', Value = '{updatedMonitoredEntityData.Value}'
+                                    WHERE ID = '{updatedMonitoredEntityData.Id}'
                                    """;
             if (command.ExecuteNonQuery() == 0)
             {
@@ -98,12 +118,18 @@ public class MonitoredEntityRepository : IMonitoredEntityRepository
     {
         try
         {
+            var addedMonitoredEntityData = new MonitoredEntityData()
+            {
+                Id = addedEntity.Id,
+                Name = addedEntity.Name,
+                Value = addedEntity.Value
+            };
             _databaseConnection.Open();
             using var command = _databaseConnection.CreateCommand();
         
             command.CommandText = $"""
                                     INSERT INTO MonitoredEntityTable
-                                    VALUES ('{addedEntity.Id.ToString().ToUpperInvariant()}', '{addedEntity.Name}', '{addedEntity.Value}')
+                                    VALUES ('{addedMonitoredEntityData.Id.ToString().ToUpperInvariant()}', '{addedMonitoredEntityData.Name}', '{addedMonitoredEntityData.Value}')
                                    """;
             if (command.ExecuteNonQuery() == 0)
             {

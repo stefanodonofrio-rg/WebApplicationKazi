@@ -10,10 +10,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddScoped<IMonitoredEntityRepository, MonitoredEntityRepository>(
-            x => 
-                new MonitoredEntityRepository(
-                    "Data Source=DEV-LT-KAZIMR; Initial Catalog=MonitoredEntityTable; Integrated Security=true; TrustServerCertificate=True"
-                    ));
+            x => new MonitoredEntityRepository(AppropriateConnectionType.ConnectionType(
+                Convert.ToInt32(builder.Configuration["DatabaseType"]), builder.Configuration["ConnectionStrings:DefaultConnection"])));
         
         var app = builder.Build();
 

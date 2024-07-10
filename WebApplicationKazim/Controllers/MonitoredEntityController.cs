@@ -11,33 +11,33 @@ namespace WebApplicationKazim.Controllers;
 public class MonitoredEntityController : ControllerBase
 {
     private readonly ILogger<MonitoredEntityController> _logger;
-    private IMonitoredEntityRepository _databaseFunctionality;
+    private IMonitoredEntityRepository _MonitoredEntityRepository;
 
     public MonitoredEntityController(ILogger<MonitoredEntityController> logger, IMonitoredEntityRepository monitoredEntityRepository)
     {
         _logger = logger;
-        _databaseFunctionality = monitoredEntityRepository;
+        _MonitoredEntityRepository = monitoredEntityRepository;
     }
 
     [HttpGet]
     public MonitoredEntity Get(string id)
     {
-        return _databaseFunctionality.Get(id);
+        return _MonitoredEntityRepository.Get(id);
     }
 
     [HttpDelete]
     public bool Delete(string id)
     {
-        return _databaseFunctionality.Delete(id);
+        return _MonitoredEntityRepository.Delete(id);
     }
     [HttpPut]
-    public bool Update(Guid id, string name, string value)
+    public bool Update(MonitoredEntity monitoredEntity)
     {
-       return _databaseFunctionality.Update(new MonitoredEntity(id, name, value));
+       return _MonitoredEntityRepository.Update(monitoredEntity);
     }
     [HttpPost]
-    public bool Add(Guid id, string name, string value)
+    public bool Add(MonitoredEntity monitoredEntity)
     {
-        return _databaseFunctionality.Add(new MonitoredEntity(id, name, value));
+        return _MonitoredEntityRepository.Add(monitoredEntity);
     }
 }
