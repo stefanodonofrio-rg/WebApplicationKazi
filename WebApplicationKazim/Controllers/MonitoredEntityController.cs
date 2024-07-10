@@ -20,9 +20,9 @@ public class MonitoredEntityController : ControllerBase
     }
 
     [HttpGet]
-    public MonitoredEntity Get(string id)
+    public MonitoredEntityDTO Get(string id)
     {
-        return _MonitoredEntityRepository.Get(id);
+        return MonitoredEntityDomainDTOTransfer.DomainToDTOConverter(_MonitoredEntityRepository.Get(id));
     }
 
     [HttpDelete]
@@ -31,13 +31,13 @@ public class MonitoredEntityController : ControllerBase
         return _MonitoredEntityRepository.Delete(id);
     }
     [HttpPut]
-    public bool Update(MonitoredEntity monitoredEntity)
+    public bool Update(MonitoredEntityDTO monitoredEntityDto)
     {
-       return _MonitoredEntityRepository.Update(monitoredEntity);
+       return _MonitoredEntityRepository.Update(MonitoredEntityDomainDTOTransfer.DTOToDomainConverter(monitoredEntityDto));
     }
     [HttpPost]
-    public bool Add(MonitoredEntity monitoredEntity)
+    public bool Add(MonitoredEntityDTO monitoredEntityDto)
     {
-        return _MonitoredEntityRepository.Add(monitoredEntity);
+        return _MonitoredEntityRepository.Add(MonitoredEntityDomainDTOTransfer.DTOToDomainConverter(monitoredEntityDto));
     }
 }
