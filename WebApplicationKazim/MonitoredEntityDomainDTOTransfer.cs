@@ -4,6 +4,10 @@ public static class MonitoredEntityDomainDTOTransfer
 {
     public static MonitoredEntityDTO DomainToDTOConverter(MonitoredEntity monitoredEntity)
     {
+        if (monitoredEntity is null)
+        {
+            return null;
+        }
         return new MonitoredEntityDTO()
         {
             Id = monitoredEntity.Id,

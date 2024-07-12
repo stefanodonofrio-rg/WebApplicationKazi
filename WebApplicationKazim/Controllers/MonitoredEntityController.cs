@@ -10,12 +10,10 @@ namespace WebApplicationKazim.Controllers;
 [Route("[controller]")]
 public class MonitoredEntityController : ControllerBase
 {
-    private readonly ILogger<MonitoredEntityController> _logger;
     private IMonitoredEntityRepository _MonitoredEntityRepository;
 
-    public MonitoredEntityController(ILogger<MonitoredEntityController> logger, IMonitoredEntityRepository monitoredEntityRepository)
+    public MonitoredEntityController(IMonitoredEntityRepository monitoredEntityRepository)
     {
-        _logger = logger;
         _MonitoredEntityRepository = monitoredEntityRepository;
     }
 
