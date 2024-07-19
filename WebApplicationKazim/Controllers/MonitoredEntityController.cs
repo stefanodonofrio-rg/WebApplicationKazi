@@ -1,4 +1,8 @@
+using System.Data;
+using System.Data.Common;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+
 
 namespace WebApplicationKazim.Controllers;
 
@@ -6,16 +10,32 @@ namespace WebApplicationKazim.Controllers;
 [Route("[controller]")]
 public class MonitoredEntityController : ControllerBase
 {
-    private readonly ILogger<MonitoredEntityController> _logger;
+    private IMonitoredEntityRepository _MonitoredEntityRepository;
 
-    public MonitoredEntityController(ILogger<MonitoredEntityController> logger)
+    public MonitoredEntityController(IMonitoredEntityRepository monitoredEntityRepository)
     {
-        _logger = logger;
+        _MonitoredEntityRepository = monitoredEntityRepository;
     }
 
     [HttpGet]
-    public IEnumerable<MonitoredEntity> Get()
+    public MonitoredEntityDTO Get(string id)
     {
-        return new MonitoredEntity[]{};
+        return MonitoredEntityDomainDTOTransfer.DomainToDTOConverter(_MonitoredEntityRepository.Get(id));
+    }
+
+    [HttpDelete]
+    public bool Delete(string id)
+    {
+        return _MonitoredEntityRepository.Delete(id);
+    }
+    [HttpPut]
+    public bool Update(MonitoredEntityDTO monitoredEntityDto)
+    {
+       return _MonitoredEntityRepository.Update(MonitoredEntityDomainDTOTransfer.DTOToDomainConverter(monitoredEntityDto));
+    }
+    [HttpPost]
+    public bool Add(MonitoredEntityDTO monitoredEntityDto)
+    {
+        return _MonitoredEntityRepository.Add(MonitoredEntityDomainDTOTransfer.DTOToDomainConverter(monitoredEntityDto));
     }
 }

@@ -1,6 +1,6 @@
 namespace WebApplicationKazim;
 
-public record MonitoredEntity
+public record MonitoredEntityData
 {
     public Guid Id { get; init; }
     
