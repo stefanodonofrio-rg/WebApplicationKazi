@@ -10,27 +10,31 @@ public class MonitoredEntityControllerTests
     private static readonly Guid _guidTwo = Guid.NewGuid();
     public class TestMonitoredEntityRepository : IMonitoredEntityRepository
     {
-        private IList<MonitoredEntity> _repositoryInMemory = new List<MonitoredEntity>()
+        internal static MonitoredEntity MonitoredEntityOne = new()
         {
-            new()
-            {
-                Id = _guidOne,
-                Name = "Kazim",
-                Value = "55"
-            },
-            new()
-            {
-                Id = _guidTwo,
-                Name = "KAZIM",
-                Value = "20"
-            }
+            Id = _guidOne,
+            Name = "Kazim",
+            Value = "55"
+        };
+
+        internal static MonitoredEntity MonitoredEntityTwo = new()
+        {
+            Id = _guidTwo,
+            Name = "Kazim",
+            Value = "55"
+        };
+        
+        internal static IList<MonitoredEntity> InMemoryMonitoredEntities = new List<MonitoredEntity>()
+        {
+            MonitoredEntityOne,
+            MonitoredEntityTwo
         };
         public MonitoredEntity Get(string id)
         {
             MonitoredEntity valueToReturn = null;
             try
             {
-                valueToReturn = _repositoryInMemory.Single(x => x.Id.ToString() == id);
+                valueToReturn = InMemoryMonitoredEntities.Single(x => x.Id.ToString() == id);
             }
             catch (Exception e)
             {
@@ -45,7 +49,7 @@ public class MonitoredEntityControllerTests
         {
             try
             {
-                _repositoryInMemory.Remove(Get(id));
+                InMemoryMonitoredEntities.Remove(Get(id));
             }
             catch (Exception e)
             {
@@ -75,7 +79,7 @@ public class MonitoredEntityControllerTests
             {
                 if (Get(addedEntity.Id.ToString()) is null)
                 {
-                    _repositoryInMemory.Add(addedEntity);
+                    InMemoryMonitoredEntities.Add(addedEntity);
                     return true;
                 }
             }
@@ -89,8 +93,7 @@ public class MonitoredEntityControllerTests
         var monitoredEntityRepository = new TestMonitoredEntityRepository();
         var monitoredEntityController = new MonitoredEntityController(monitoredEntityRepository);
 
-        monitoredEntityController.Get(_guidOne.ToString()).Id.Should().Be(_guidOne, "the entity should be in the repository stored in memory.");
-        
+        monitoredEntityController.Get(TestMonitoredEntityRepository.MonitoredEntityOne.Id.ToString()).Should().BeEquivalentTo(TestMonitoredEntityRepository.MonitoredEntityOne, "the entity should be in the repository stored in memory.");
     }
 
     [Test]
